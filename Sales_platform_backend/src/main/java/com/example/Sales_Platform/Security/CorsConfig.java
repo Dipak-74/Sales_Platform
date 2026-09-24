@@ -1,13 +1,13 @@
 
 package com.example.Sales_Platform.Security;
 
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 public class CorsConfig {
@@ -20,7 +20,7 @@ public class CorsConfig {
 
         // React frontend
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of("http://localhost:5173","https://sales-platform-frontend.onrender.com","https://salesplat.netlify.app")
         );
 
         // HTTP methods
