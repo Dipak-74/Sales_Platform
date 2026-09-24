@@ -19,7 +19,7 @@ public class CorsConfig {
                 new CorsConfiguration();
 
         // React frontend
-        configuration.setAllowedOrigins(
+        configuration.setAllowedOrigins (
                 List.of("http://localhost:5173","https://sales-platform-frontend.onrender.com","https://salesplat.netlify.app")
         );
 
