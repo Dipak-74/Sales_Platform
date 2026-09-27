@@ -1,5 +1,5 @@
 
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function KpiCards({ summary = {}, profitAvailable = true }) {
   const revenue = Number(summary.totalRevenue || 0);

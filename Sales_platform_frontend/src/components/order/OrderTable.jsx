@@ -1,6 +1,5 @@
 
-import { formatCurrency } from "../../utils/formatCurrency";
-import { formatDate } from "../../utils/formatDate";
+import { formatCurrency, formatDate } from "../../utils/formatters";
 
 function getStatusBadgeClass(status) {
   switch ((status || "").toUpperCase()) {
