@@ -1,6 +1,10 @@
 
 package com.example.Sales_Platform.Controller;
 
+import java.util.Collections;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +22,12 @@ public class AuthController {
 
     public AuthController(AuthServices authServices) {
         this.authServices = authServices;
+    }
+
+    // Health / Server Ping to wake Render instance up quickly
+    @GetMapping("/ping")
+    public Map<String, String> ping() {
+        return Collections.singletonMap("status", "UP");
     }
 
     // Google Login

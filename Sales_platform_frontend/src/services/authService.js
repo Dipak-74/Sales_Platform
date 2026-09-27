@@ -11,3 +11,6 @@ export const normalLogin = (email, password) =>
 
 export const normalRegister = (name, email, password) =>
   api.post("/api/auth/register", { name, email, password });
+
+export const pingServer = () =>
+  api.get("/api/auth/ping");

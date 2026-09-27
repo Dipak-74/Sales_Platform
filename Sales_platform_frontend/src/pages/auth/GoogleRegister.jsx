@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { normalRegister } from "../../services/authService";
+import { normalRegister, pingServer } from "../../services/authService";
 import GoogleLoginButton from "../../components/GoogleLoginButton";
 
 function GoogleRegister() {
@@ -15,6 +15,25 @@ function GoogleRegister() {
   const [showPassword, setShowPassword] = useState(false);
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState("Creating Account...");
+
+  // Pre-warm backend immediately on page load so requests respond instantly
+  useEffect(() => {
+    pingServer().catch(() => {});
+  }, []);
+
+  // Show informative message if cold start takes a few seconds
+  useEffect(() => {
+    let timer;
+    if (loading) {
+      timer = setTimeout(() => {
+        setLoadingStatus("Connecting to secure server... Please wait a moment.");
+      }, 2500);
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [loading]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,14 +51,15 @@ function GoogleRegister() {
 
     try {
       setLoading(true);
+      setLoadingStatus("Creating Account...");
       const res = await normalRegister(name.trim(), email.trim(), password);
       login(res.data);
+      setLoadingStatus("Account created! Redirecting...");
       navigate("/customer/dashboard");
     } catch (err) {
       setFormError(
         err.response?.data?.message || err.message || "Registration failed. Please try again."
       );
-    } finally {
       setLoading(false);
     }
   };
@@ -211,15 +231,55 @@ function GoogleRegister() {
               />
             </div>
 
-            <button type="submit" className="primary-btn" style={{ width: "100%", marginTop: 4 }} disabled={loading}>
-              {loading ? "Creating Account..." : "Create Account"}
+            <button
+              type="submit"
+              className="primary-btn"
+              style={{
+                width: "100%",
+                marginTop: 4,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 10,
+              }}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="btn-spinner" aria-hidden="true"></span>
+                  <span>{loadingStatus}</span>
+                </>
+              ) : (
+                "Create Account"
+              )}
             </button>
           </form>
 
+          {loading && (
+            <div className="auth-loading-card" role="status" style={{ marginBottom: 16 }}>
+              <div className="spinner-sm" aria-hidden="true"></div>
+              <span>{loadingStatus}</span>
+            </div>
+          )}
+
           <div className="divider"><span>or register with</span></div>
 
-          <div className="google-wrap">
-            <GoogleLoginButton mode="register" />
+          <div
+            className="google-wrap"
+            style={{
+              pointerEvents: loading ? "none" : "auto",
+              opacity: loading ? 0.65 : 1,
+            }}
+          >
+            <GoogleLoginButton
+              mode="register"
+              onLoadingChange={(isLoading, text) => {
+                setLoading(isLoading);
+                setLoadingStatus(text || "Creating account with Google...");
+                if (isLoading) setFormError("");
+              }}
+              onError={(errMsg) => setFormError(errMsg)}
+            />
           </div>
 
           <div className="auth-security-notice">

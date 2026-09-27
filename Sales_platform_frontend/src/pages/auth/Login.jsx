@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { normalLogin } from "../../services/authService";
+import { normalLogin, pingServer } from "../../services/authService";
 import GoogleLoginButton from "../../components/GoogleLoginButton";
 
 function Login() {
@@ -15,6 +15,25 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState("Signing in...");
+
+  // Pre-warm backend immediately on page load so requests respond instantly
+  useEffect(() => {
+    pingServer().catch(() => {});
+  }, []);
+
+  // Show informative message if cold start takes a few seconds
+  useEffect(() => {
+    let timer;
+    if (loading) {
+      timer = setTimeout(() => {
+        setLoadingStatus("Connecting to secure server... Please wait a moment.");
+      }, 2500);
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [loading]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,8 +46,10 @@ function Login() {
 
     try {
       setLoading(true);
+      setLoadingStatus("Signing in...");
       const res = await normalLogin(email.trim(), password);
       login(res.data);
+      setLoadingStatus("Signed in! Redirecting...");
       const role = res.data.role;
       if (role === "ADMIN") navigate("/admin/dashboard");
       else if (role === "MANAGER") navigate("/manager/dashboard");
@@ -38,7 +59,6 @@ function Login() {
       setFormError(
         err.response?.data?.message || err.message || "Invalid email or password."
       );
-    } finally {
       setLoading(false);
     }
   };
@@ -223,15 +243,55 @@ function Login() {
               </div>
             </div>
 
-            <button type="submit" className="primary-btn" style={{ width: "100%", marginTop: 4 }} disabled={loading}>
-              {loading ? "Signing in..." : "Sign In"}
+            <button
+              type="submit"
+              className="primary-btn"
+              style={{
+                width: "100%",
+                marginTop: 4,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 10,
+              }}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="btn-spinner" aria-hidden="true"></span>
+                  <span>{loadingStatus}</span>
+                </>
+              ) : (
+                "Sign In"
+              )}
             </button>
           </form>
 
+          {loading && (
+            <div className="auth-loading-card" role="status" style={{ marginBottom: 16 }}>
+              <div className="spinner-sm" aria-hidden="true"></div>
+              <span>{loadingStatus}</span>
+            </div>
+          )}
+
           <div className="divider"><span>or continue with</span></div>
 
-          <div className="google-wrap">
-            <GoogleLoginButton mode="login" />
+          <div
+            className="google-wrap"
+            style={{
+              pointerEvents: loading ? "none" : "auto",
+              opacity: loading ? 0.65 : 1,
+            }}
+          >
+            <GoogleLoginButton
+              mode="login"
+              onLoadingChange={(isLoading, text) => {
+                setLoading(isLoading);
+                setLoadingStatus(text || "Authenticating with Google...");
+                if (isLoading) setFormError("");
+              }}
+              onError={(errMsg) => setFormError(errMsg)}
+            />
           </div>
 
           <div className="auth-security-notice">

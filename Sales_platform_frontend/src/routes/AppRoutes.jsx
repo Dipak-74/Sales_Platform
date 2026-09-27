@@ -28,7 +28,7 @@ import AdminReports from "../pages/admin/Reports";
 
 // Manager Pages
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
-import ManagerEmployees from "../pages/manager/ManagerEmployees";
+import ManagerEmployees from "../pages/manager/Employees";
 import ManagerProducts from "../pages/manager/Products";
 import ManagerCustomers from "../pages/manager/Customers";
 import ManagerOrders from "../pages/manager/Orders";

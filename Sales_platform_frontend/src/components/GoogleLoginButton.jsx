@@ -3,12 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { googleLogin, googleRegister } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 
-function GoogleLoginButton({ mode = "login" }) {
+function GoogleLoginButton({ mode = "login", onLoadingChange, onError }) {
   const navigate = useNavigate();
   const { login } = useAuth();
 
   const handleSuccess = async (credentialResponse) => {
     try {
+      if (onLoadingChange) {
+        onLoadingChange(true, "Connecting with Google account...");
+      }
+
       const response = mode === "register"
         ? await googleRegister(credentialResponse?.credential)
         : await googleLogin(credentialResponse?.credential);
@@ -31,19 +35,36 @@ function GoogleLoginButton({ mode = "login" }) {
 
       navigate(redirectMap[role] || "/customer/dashboard");
     } catch (error) {
-      const message = mode === "register"
-        ? "Google registration failed. Please try again."
-        : "Google login failed. Please try again.";
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        (mode === "register"
+          ? "Google registration failed. Please try again."
+          : "Google login failed. Please try again.");
 
-      window.alert(message);
-      console.error("Google auth error:", error);
+      if (onError) {
+        onError(message);
+      } else {
+        console.error("Google auth error:", error);
+      }
+    } finally {
+      if (onLoadingChange) {
+        onLoadingChange(false, "");
+      }
     }
   };
 
   return (
     <GoogleLogin
       onSuccess={handleSuccess}
-      onError={() => window.alert("Google authentication was not completed.")}
+      onError={() => {
+        const message = "Google authentication was cancelled or could not be completed.";
+        if (onError) {
+          onError(message);
+        } else {
+          console.error("Google auth prompt failed.");
+        }
+      }}
       text="continue_with"
       shape="rectangular"
       size="large"
