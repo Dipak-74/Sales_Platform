@@ -158,12 +158,10 @@ const menuMap = {
     { label: "Analytics", to: "/admin/analytics" },
     { label: "Reports", to: "/admin/reports" },
     { label: "Users", to: "/admin/users" },
-    { label: "Invitations", to: "/admin/invitations" },
     { label: "Profile", to: "/profile" },
   ],
   MANAGER: [
     { label: "Dashboard", to: "/manager/dashboard" },
-    { label: "My Employees", to: "/manager/employees" },
     { label: "Employees", to: "/manager/employees" },
     { label: "Products", to: "/manager/products" },
     { label: "Customers", to: "/manager/customers" },

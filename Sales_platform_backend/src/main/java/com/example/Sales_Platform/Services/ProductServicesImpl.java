@@ -37,11 +37,14 @@ public class ProductServicesImpl implements ProductServices {
     public ProductResponseDTO createProduct(
             ProductRequestDTO request) {
 
-                validateProductRequest(request);
+        validateProductRequest(request);
 
-                if (productRepo.findBySku(request.getSku().trim()).isPresent()) {
-                        throw new RuntimeException("Product SKU already exists");
-                }
+        String sku = request.getSku() != null ? request.getSku().trim() : "";
+        if (sku.isBlank()) {
+            sku = "SKU-" + System.currentTimeMillis();
+        } else if (productRepo.findBySku(sku).isPresent()) {
+            sku = sku + "-" + (int)(Math.random() * 9000 + 1000);
+        }
 
         // Find Category
         Category category = categoryRepo
@@ -54,7 +57,7 @@ public class ProductServicesImpl implements ProductServices {
         Product product = new Product();
 
         product.setName(request.getName());
-        product.setSku(request.getSku().trim());
+        product.setSku(sku);
         product.setDescription(request.getDescription());
         product.setCategory(category);
         product.setCostPrice(request.getCostPrice());
@@ -194,12 +197,13 @@ public class ProductServicesImpl implements ProductServices {
                                 "Category not found"));
 
         product.setName(request.getName());
-                if (!product.getSku().equalsIgnoreCase(request.getSku().trim())
-                                && productRepo.findBySku(request.getSku().trim()).isPresent()) {
-                        throw new RuntimeException("Product SKU already exists");
-                }
+        String updatedSku = request.getSku() != null ? request.getSku().trim() : product.getSku();
+        if (!product.getSku().equalsIgnoreCase(updatedSku)
+                && productRepo.findBySku(updatedSku).isPresent()) {
+            updatedSku = updatedSku + "-" + (int)(Math.random() * 9000 + 1000);
+        }
 
-                product.setSku(request.getSku().trim());
+        product.setSku(updatedSku);
         product.setDescription(request.getDescription());
         product.setCategory(category);
         product.setCostPrice(request.getCostPrice());

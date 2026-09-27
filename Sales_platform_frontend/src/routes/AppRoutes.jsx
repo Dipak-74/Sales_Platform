@@ -59,6 +59,7 @@ function RootRedirect() {
     return <Navigate to="/login" replace />;
   }
 
+  const normalizedRole = (role || "").toUpperCase();
   const redirectMap = {
     ADMIN: "/admin/dashboard",
     MANAGER: "/manager/dashboard",
@@ -66,7 +67,25 @@ function RootRedirect() {
     CUSTOMER: "/customer/dashboard",
   };
 
-  return <Navigate to={redirectMap[role] || "/login"} replace />;
+  return <Navigate to={redirectMap[normalizedRole] || "/login"} replace />;
+}
+
+function RoleSmartRedirect({ target }) {
+  const { isAuthenticated, role } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  const normalizedRole = (role || "").toUpperCase();
+  const prefix = {
+    ADMIN: "/admin",
+    MANAGER: "/manager",
+    EMPLOYEE: "/employee",
+    CUSTOMER: "/customer",
+  }[normalizedRole] || "/customer";
+
+  return <Navigate to={`${prefix}/${target}`} replace />;
 }
 
 function AppRoutes() {
@@ -373,6 +392,21 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
+      {/* Friendly Shortcuts & Role Aliases */}
+      <Route path="/dashboard" element={<RootRedirect />} />
+      <Route path="/products" element={<RoleSmartRedirect target="products" />} />
+      <Route path="/orders" element={<RoleSmartRedirect target="orders" />} />
+      <Route path="/customers" element={<RoleSmartRedirect target="customers" />} />
+      <Route path="/inventory" element={<RoleSmartRedirect target="inventory" />} />
+      <Route path="/analytics" element={<RoleSmartRedirect target="analytics" />} />
+      <Route path="/cart" element={<Navigate to="/customer/cart" replace />} />
+      <Route path="/checkout" element={<Navigate to="/customer/checkout" replace />} />
+      <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
+      <Route path="/admin/invitations" element={<Navigate to="/admin/users" replace />} />
+      <Route path="/manager" element={<Navigate to="/manager/dashboard" replace />} />
+      <Route path="/employee" element={<Navigate to="/employee/dashboard" replace />} />
+      <Route path="/customer" element={<Navigate to="/customer/dashboard" replace />} />
 
       {/* Root & Catch-all Fallbacks */}
       <Route path="/" element={<Landing />} />

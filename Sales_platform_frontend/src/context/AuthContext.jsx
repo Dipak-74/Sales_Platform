@@ -5,7 +5,7 @@ const AuthContext = createContext(null);
 const readStoredAuth = () => ({
   token: localStorage.getItem("token") || "",
   userId: localStorage.getItem("userId") || "",
-  role: localStorage.getItem("role") || "",
+  role: (localStorage.getItem("role") || "").trim().toUpperCase(),
   userName: localStorage.getItem("userName") || "User",
   email: localStorage.getItem("userEmail") || "",
   userEmail: localStorage.getItem("userEmail") || "",
@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
     const nextAuth = {
       token: userData.token || "",
       userId: userData.userId || userData.id || "",
-      role: userData.role || "CUSTOMER",
+      role: (userData.role || "CUSTOMER").trim().toUpperCase(),
       userName: userData.name || userData.userName || "User",
       email: userData.email || userData.userEmail || "",
       userEmail: userData.email || userData.userEmail || "",

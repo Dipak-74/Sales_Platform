@@ -25,17 +25,21 @@ function ProductForm({
   const [errors, setErrors] = useState({});
   const [newCategoryName, setNewCategoryName] = useState("");
   const [creatingCategory, setCreatingCategory] = useState(false);
+  const [skuTouched, setSkuTouched] = useState(false);
 
   useEffect(() => {
+    const isNew = !initialData;
+    const initialSku = initialData?.sku || (isNew ? `PRD-${Math.floor(1000 + Math.random() * 9000)}` : "");
     setForm({
       name: initialData?.name || "",
-      sku: initialData?.sku || "",
+      sku: initialSku,
       categoryId: initialData?.category?.id || initialData?.categoryId || "",
       description: initialData?.description || "",
       costPrice: initialData?.costPrice ?? "",
       sellingPrice: initialData?.sellingPrice ?? initialData?.price ?? "",
       imageUrl: initialData?.imageUrl || "",
     });
+    setSkuTouched(Boolean(initialData?.sku));
     setImageFile(null);
     setImagePreview(initialData?.imageUrl || "");
     setErrors({});
@@ -44,7 +48,20 @@ function ProductForm({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    if (name === "sku") {
+      setSkuTouched(true);
+    }
+    setForm((prev) => {
+      const next = { ...prev, [name]: value };
+      if (name === "name" && !skuTouched && !initialData) {
+        const cleanName = value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 4).toUpperCase();
+        if (cleanName.length >= 2) {
+          const suffix = prev.sku ? (prev.sku.split("-")[1] || Math.floor(1000 + Math.random() * 9000)) : Math.floor(1000 + Math.random() * 9000);
+          next.sku = `${cleanName}-${suffix}`;
+        }
+      }
+      return next;
+    });
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -55,6 +72,7 @@ function ProductForm({
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     const generated = `${cleanName || "PRD"}-${randomSuffix}`;
     setForm((prev) => ({ ...prev, sku: generated }));
+    setSkuTouched(true);
     setErrors((prev) => ({ ...prev, sku: "" }));
   };
 
