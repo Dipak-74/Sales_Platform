@@ -101,13 +101,8 @@ function AdminProducts() {
           : []
       );
 
-    } catch (err) {
-
-      console.error(
-        "Failed to load categories:",
-        err
-      );
-
+    } catch {
+      // Ignore category load error quietly
     }
 
   };
@@ -338,12 +333,6 @@ function AdminProducts() {
       await loadProducts();
 
     } catch (err) {
-
-      console.error(
-        "Product operation failed:",
-        err
-      );
-
       setError(
         err?.response?.data?.message ||
         err?.message ||

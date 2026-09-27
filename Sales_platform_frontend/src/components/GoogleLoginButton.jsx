@@ -44,8 +44,6 @@ function GoogleLoginButton({ mode = "login", onLoadingChange, onError }) {
 
       if (onError) {
         onError(message);
-      } else {
-        console.error("Google auth error:", error);
       }
     } finally {
       if (onLoadingChange) {
@@ -61,8 +59,6 @@ function GoogleLoginButton({ mode = "login", onLoadingChange, onError }) {
         const message = "Google authentication was cancelled or could not be completed.";
         if (onError) {
           onError(message);
-        } else {
-          console.error("Google auth prompt failed.");
         }
       }}
       text="continue_with"

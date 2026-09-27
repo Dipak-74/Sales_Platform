@@ -43,7 +43,6 @@ function AnalyticsDashboardView({ role = "ADMIN", pageTitle = "Analytics & Intel
       const response = await getAnalytics(role, start, end);
       setData(response.data);
     } catch (err) {
-      console.error("Analytics fetch error:", err);
       setError(
         err?.response?.data?.message ||
           "Failed to load business analytics from server. Please verify network and server logs."
