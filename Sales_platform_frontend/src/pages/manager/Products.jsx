@@ -123,24 +123,32 @@ function ManagerProducts() {
       setFormSubmitting(true);
       setError("");
 
+      let imageUrl = productData.imageUrl || null;
+      if (imageFile) {
+        imageUrl = await uploadProductImage(imageFile);
+      }
+
+      const payload = {
+        ...productData,
+        imageUrl,
+      };
+
       if (editingProduct) {
         const id = editingProduct.id ?? editingProduct.productId;
-        await updateProduct(id, productData);
+        await updateProduct(id, payload);
         setSuccessMsg("Product updated successfully.");
       } else {
-        const imageUrl = imageFile
-          ? await uploadProductImage(imageFile)
-          : productData.imageUrl;
-        await createProduct({ ...productData, imageUrl }, null);
+        await createProduct(payload);
         setSuccessMsg("Product created successfully.");
       }
 
       setIsModalOpen(false);
       setEditingProduct(null);
+      setError("");
       setTimeout(() => setSuccessMsg(""), 3000);
       loadProducts();
     } catch (err) {
-      setError(err?.response?.data?.message || "Failed to save product.");
+      setError(err?.response?.data?.message || err?.message || "Failed to save product.");
     } finally {
       setFormSubmitting(false);
     }
@@ -163,6 +171,7 @@ function ManagerProducts() {
             type="button"
             className="primary-btn"
             onClick={() => {
+              setError("");
               setEditingProduct(null);
               setIsModalOpen(true);
             }}
@@ -203,6 +212,7 @@ function ManagerProducts() {
           <ProductTable
             products={displayedProducts}
             onEdit={(product) => {
+              setError("");
               setEditingProduct(product);
               setIsModalOpen(true);
             }}
@@ -217,6 +227,7 @@ function ManagerProducts() {
         onClose={() => {
           setIsModalOpen(false);
           setEditingProduct(null);
+          setError("");
         }}
         title={editingProduct ? "Edit Product" : "Create Product"}
         maxWidth="680px"
@@ -228,8 +239,10 @@ function ManagerProducts() {
           onCancel={() => {
             setIsModalOpen(false);
             setEditingProduct(null);
+            setError("");
           }}
           loading={formSubmitting}
+          serverError={error}
         />
       </Modal>
     </MainLayout>

@@ -8,6 +8,7 @@ function ProductForm({
   onCancel,
   onCreateCategory,
   loading = false,
+  serverError = "",
 }) {
   const [form, setForm] = useState({
     name: "",
@@ -49,6 +50,14 @@ function ProductForm({
     }
   };
 
+  const handleGenerateSku = () => {
+    const cleanName = (form.name || "PRD").replace(/[^a-zA-Z0-9]/g, "").slice(0, 4).toUpperCase();
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const generated = `${cleanName || "PRD"}-${randomSuffix}`;
+    setForm((prev) => ({ ...prev, sku: generated }));
+    setErrors((prev) => ({ ...prev, sku: "" }));
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -72,7 +81,8 @@ function ProductForm({
   const handleImageUrlChange = (e) => {
     const imageUrl = e.target.value;
     setForm((prev) => ({ ...prev, imageUrl }));
-    if (!imageFile) setImagePreview(imageUrl);
+    setImageFile(null);
+    setImagePreview(imageUrl);
     if (imageUrl) setErrors((prev) => ({ ...prev, image: "" }));
   };
 
@@ -103,10 +113,10 @@ function ProductForm({
     const productPayload = {
       name: form.name.trim(),
       sku: form.sku.trim(),
-      categoryId: Number(form.categoryId),
+      categoryId: form.categoryId ? Number(form.categoryId) : "",
       description: form.description.trim(),
-      costPrice: Number(form.costPrice),
-      sellingPrice: Number(form.sellingPrice),
+      costPrice: form.costPrice !== "" ? Number(form.costPrice) : 0,
+      sellingPrice: form.sellingPrice !== "" ? Number(form.sellingPrice) : 0,
       imageUrl: form.imageUrl.trim(),
     };
 
@@ -121,6 +131,23 @@ function ProductForm({
 
   return (
     <form className="form-grid" onSubmit={handleSubmit}>
+      {serverError && (
+        <div
+          className="alert alert-danger"
+          style={{
+            background: "#fee2e2",
+            color: "#991b1b",
+            padding: "10px 14px",
+            borderRadius: 8,
+            border: "1px solid #f87171",
+            marginBottom: 12,
+            fontSize: "0.9rem",
+          }}
+        >
+          {serverError}
+        </div>
+      )}
+
       <div className="field-group">
         <label htmlFor="name">Product Name *</label>
         <input
@@ -137,7 +164,17 @@ function ProductForm({
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
         <div className="field-group">
-          <label htmlFor="sku">SKU Code *</label>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+            <label htmlFor="sku" style={{ margin: 0 }}>SKU Code *</label>
+            <button
+              type="button"
+              className="secondary-btn"
+              style={{ padding: "2px 8px", fontSize: "0.74rem" }}
+              onClick={handleGenerateSku}
+            >
+              ⚡ Auto-Generate
+            </button>
+          </div>
           <input
             id="sku"
             name="sku"
@@ -145,9 +182,14 @@ function ProductForm({
             type="text"
             value={form.sku}
             onChange={handleChange}
-            placeholder="e.g. WH-1000XM5"
+            placeholder="e.g. WH-1000XM5 or click Auto-Generate"
           />
           {errors.sku && <small className="field-error">{errors.sku}</small>}
+          {serverError && serverError.toLowerCase().includes("sku") && (
+            <small className="field-error" style={{ display: "block", marginTop: 4 }}>
+              SKU already exists! Click &apos;Auto-Generate&apos; to generate a unique SKU.
+            </small>
+          )}
         </div>
 
         <div className="field-group">
@@ -259,8 +301,25 @@ function ProductForm({
             <img
               src={imagePreview}
               alt="Preview"
-              style={{ maxHeight: 150, maxWidth: "100%", borderRadius: 12, objectFit: "cover" }}
+              style={{ maxHeight: 140, maxWidth: "100%", borderRadius: 12, objectFit: "cover" }}
+              onError={(e) => {
+                e.target.style.display = "none";
+              }}
             />
+            <div style={{ marginTop: 6 }}>
+              <button
+                type="button"
+                className="secondary-btn"
+                style={{ fontSize: "0.75rem", padding: "3px 8px" }}
+                onClick={() => {
+                  setImageFile(null);
+                  setImagePreview("");
+                  setForm((prev) => ({ ...prev, imageUrl: "" }));
+                }}
+              >
+                ✕ Remove Image
+              </button>
+            </div>
           </div>
         )}
       </div>
@@ -280,4 +339,3 @@ function ProductForm({
 }
 
 export default ProductForm;
-

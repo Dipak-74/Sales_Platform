@@ -14,11 +14,14 @@ export const validateProductForm = (product) => {
   if (!isRequired(product.name)) errors.name = "Product name is required.";
   if (!isRequired(product.sku)) errors.sku = "SKU is required.";
   if (!isValidPrice(product.costPrice)) errors.costPrice = "Cost price cannot be negative.";
-  if (!isValidPrice(product.sellingPrice)) errors.sellingPrice = "Selling price cannot be negative.";
+  if (!isValidPrice(product.sellingPrice) || Number(product.sellingPrice) <= 0) {
+    errors.sellingPrice = "Selling price must be greater than zero.";
+  }
 
-  if (product.categoryId === undefined || product.categoryId === "") {
+  if (!product.categoryId || Number(product.categoryId) <= 0 || isNaN(Number(product.categoryId))) {
     errors.categoryId = "Please select a category.";
   }
 
   return errors;
 };
+

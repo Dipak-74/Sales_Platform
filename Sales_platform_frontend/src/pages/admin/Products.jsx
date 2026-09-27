@@ -283,10 +283,20 @@ function AdminProducts() {
       setFormSubmitting(true);
       setError("");
 
-      // -------------------------------------------------
-      // UPDATE PRODUCT
-      // -------------------------------------------------
+      let imageUrl = productData.imageUrl || null;
 
+      // Upload image to Supabase if a local file was selected
+      if (imageFile) {
+        imageUrl = await uploadProductImage(imageFile);
+      }
+
+      // Product data + image URL
+      const product = {
+        ...productData,
+        imageUrl: imageUrl,
+      };
+
+      // UPDATE PRODUCT
       if (editingProduct) {
 
         const productId =
@@ -295,7 +305,7 @@ function AdminProducts() {
 
         await updateProduct(
           productId,
-          productData
+          product
         );
 
         setSuccessMsg(
@@ -304,47 +314,10 @@ function AdminProducts() {
 
       }
 
-      // -------------------------------------------------
       // CREATE PRODUCT
-      // -------------------------------------------------
-
       else {
 
-        let imageUrl =
-          productData.imageUrl || null;
-
-        // Upload image to Supabase
-        if (imageFile) {
-
-          imageUrl =
-            await uploadProductImage(
-              imageFile
-            );
-
-          console.log(
-            "Selected Image:",
-            imageFile
-          );
-
-          console.log(
-            "Product Image URL:",
-            imageUrl
-          );
-          imageUrl = await uploadProductImage(imageFile);
-        }
-
-        // Product data + image URL
-        const product = {
-          ...productData,
-          imageUrl: imageUrl,
-        };
-
-        console.log(
-          "Product Data Sent to Backend:",
-          product
-        );
-
-        // Send JSON to Spring Boot
+        // Send clean JSON to Spring Boot
         await createProduct(product);
 
         setSuccessMsg(
@@ -353,11 +326,7 @@ function AdminProducts() {
 
       }
 
-
-      // -------------------------------------------------
       // CLOSE MODAL
-      // -------------------------------------------------
-
       setIsModalOpen(false);
       setEditingProduct(null);
 
@@ -497,10 +466,9 @@ function AdminProducts() {
             type="button"
             className="primary-btn"
             onClick={() => {
-
+              setError("");
               setEditingProduct(null);
               setIsModalOpen(true);
-
             }}
           >
             + Add New Product
@@ -617,10 +585,9 @@ function AdminProducts() {
             products={displayedProducts}
 
             onEdit={(product) => {
-
+              setError("");
               setEditingProduct(product);
               setIsModalOpen(true);
-
             }}
 
             onToggleStatus={
@@ -646,6 +613,7 @@ function AdminProducts() {
 
           setIsModalOpen(false);
           setEditingProduct(null);
+          setError("");
 
         }}
 
@@ -679,11 +647,16 @@ function AdminProducts() {
 
             setIsModalOpen(false);
             setEditingProduct(null);
+            setError("");
 
           }}
 
           loading={
             formSubmitting
+          }
+
+          serverError={
+            error
           }
         />
 

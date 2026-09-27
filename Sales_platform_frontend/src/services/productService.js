@@ -30,15 +30,16 @@ export const filterProducts = (categoryId, status) =>
 // =====================================================
 
 export const createProduct = (product, imageFile = null) => {
-  const formData = new FormData();
-  formData.append(
-    "product",
-    new Blob([JSON.stringify(product)], { type: "application/json" })
-  );
   if (imageFile) {
+    const formData = new FormData();
+    formData.append(
+      "product",
+      new Blob([JSON.stringify(product)], { type: "application/json" })
+    );
     formData.append("image", imageFile);
+    return api.post("/api/products", formData);
   }
-  return api.post("/api/products", formData);
+  return api.post("/api/products", product);
 };
 
 
