@@ -4,7 +4,7 @@ import MainLayout from "../../components/layout/MainLayout";
 import Modal from "../../components/common/Modal";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
-import { formatDate } from "../../utils/formatDate";
+import { formatDate } from "../../utils/formatters";
 import { getInventory, updateInventory, getInventoryTransactions } from "../../services/inventoryService";
 
 function ManagerInventory() {

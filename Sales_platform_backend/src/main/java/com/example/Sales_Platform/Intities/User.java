@@ -18,6 +18,9 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = true)
+    private String password;
+
     @Column(unique = true)
     private String googleId;
 
@@ -88,6 +91,14 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getGoogleId() {

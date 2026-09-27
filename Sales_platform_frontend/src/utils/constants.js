@@ -59,13 +59,6 @@ export const PRODUCT_STATUS = {
   INACTIVE: "INACTIVE",
 };
 
-export const INVITATION_STATUS = {
-  PENDING: "PENDING",
-  ACCEPTED: "ACCEPTED",
-  EXPIRED: "EXPIRED",
-  CANCELLD: "CANCELLD",
-};
-
 export const PAYMENT_METHODS = [
   { label: "Card (Credit/Debit)", value: "CARD" },
   { label: "UPI / Instant Transfer", value: "UPI" },

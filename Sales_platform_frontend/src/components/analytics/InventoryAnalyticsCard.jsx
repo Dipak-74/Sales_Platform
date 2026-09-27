@@ -1,8 +1,9 @@
 function InventoryAnalyticsCard({ inventory = {}, inventoryMovements = [] }) {
-  const total = Number(inventory.totalProducts || 0);
-  const inStock = Number(inventory.inStock || 0);
-  const lowStock = Number(inventory.lowStock || 0);
-  const outOfStock = Number(inventory.outOfStock || 0);
+  const inv = inventory || {};
+  const total = Number(inv.totalProducts || 0);
+  const inStock = Number(inv.inStock || 0);
+  const lowStock = Number(inv.lowStock || 0);
+  const outOfStock = Number(inv.outOfStock || 0);
 
   const inStockPercent = total > 0 ? ((inStock / total) * 100).toFixed(0) : 0;
   const lowStockPercent = total > 0 ? ((lowStock / total) * 100).toFixed(0) : 0;

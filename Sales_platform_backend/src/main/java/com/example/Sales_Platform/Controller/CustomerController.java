@@ -23,7 +23,7 @@ import com.example.Sales_Platform.Services.OrderServices;
 
 @RestController
 @RequestMapping("/api/customer")
-@PreAuthorize("hasAnyAuthority('ROLE_CUSTOMER', 'CUSTOMER')")
+@PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
 public class CustomerController {
 
     private final CustomerServices customerServices;

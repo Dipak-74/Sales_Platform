@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function CustomerCart() {
   const { userName } = useAuth();

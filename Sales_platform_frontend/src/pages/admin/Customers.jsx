@@ -73,11 +73,31 @@ function AdminCustomers() {
 
   return (
     <MainLayout title="Customers" breadcrumb={["Dashboard", "Customers"]} userName={userName || "Admin"}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 20 }}>
+        <div className="panel-card" style={{ padding: "16px 20px" }}>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>TOTAL CUSTOMERS</div>
+          <div style={{ fontSize: "1.7rem", fontWeight: 700, color: "var(--text-main)", marginTop: 4 }}>{customers.length}</div>
+        </div>
+        <div className="panel-card" style={{ padding: "16px 20px" }}>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>ACTIVE CLIENTS</div>
+          <div style={{ fontSize: "1.7rem", fontWeight: 700, color: "#10b981", marginTop: 4 }}>
+            {customers.filter(c => c.status !== "INACTIVE").length}
+          </div>
+        </div>
+        <div className="panel-card" style={{ padding: "16px 20px" }}>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>INACTIVE</div>
+          <div style={{ fontSize: "1.7rem", fontWeight: 700, color: "#ef4444", marginTop: 4 }}>
+            {customers.filter(c => c.status === "INACTIVE").length}
+          </div>
+        </div>
+      </div>
+
       <div className="panel-card" style={{ display: "grid", gap: 18 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
           <div>
             <h3 style={{ margin: 0 }}>Registered Customers</h3>
             <small style={{ color: "var(--text-muted)" }}>View client directory, contact information and addresses</small>
+            <small style={{ color: "var(--text-muted)" }}>View client directory, contact information and delivery locations</small>
           </div>
 
           <input
@@ -104,6 +124,7 @@ function AdminCustomers() {
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
+                  <th>Customer</th>
                   <th>Email</th>
                   <th>Phone</th>
                   <th>Status</th>
@@ -114,12 +135,42 @@ function AdminCustomers() {
                 {filteredCustomers.map((c) => {
                   const id = c.id ?? c.customerId;
                   const isInactive = c.status === "INACTIVE";
+                  const nameStr = c.name || c.userName || "Customer";
                   return (
                     <tr key={id}>
                       <td>#{id}</td>
                       <td><strong>{c.name || c.userName || "-"}</strong></td>
                       <td>{c.email || "-"}</td>
                       <td>{c.phone || c.phoneNumber || "-"}</td>
+                      <td>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                          <div style={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: "50%",
+                            background: "rgba(99, 102, 241, 0.12)",
+                            color: "#6366f1",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontWeight: 700,
+                            fontSize: "0.88rem",
+                            flexShrink: 0
+                          }}>
+                            {nameStr.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 600, color: "var(--text-main)" }}>{nameStr}</div>
+                            <div style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>ID #{id}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span style={{ fontSize: "0.88rem" }}>{c.email || "-"}</span>
+                      </td>
+                      <td>
+                        <span style={{ fontSize: "0.88rem", color: "var(--text-secondary)" }}>{c.phone || c.phoneNumber || "-"}</span>
+                      </td>
                       <td>
                         <span className={`badge ${isInactive ? "badge-danger" : "badge-success"}`}>
                           {c.status || "ACTIVE"}

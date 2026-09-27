@@ -1,4 +1,4 @@
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function BusinessInsightsCard({
   summary = {},
@@ -7,16 +7,19 @@ function BusinessInsightsCard({
   orderStatuses = [],
   profitAvailable = true,
 }) {
-  const revenue = Number(summary.totalRevenue || 0);
-  const profit = Number(summary.totalProfit || 0);
-  const orders = Number(summary.totalOrders || 0);
-  const lowStock = Number(summary.lowStockProducts || 0);
+  const s = summary || {};
+  const safeCategories = Array.isArray(categories) ? categories : [];
+  const safeCustomers = Array.isArray(topCustomers) ? topCustomers : [];
+  const safeStatuses = Array.isArray(orderStatuses) ? orderStatuses : [];
+  const revenue = Number(s.totalRevenue || 0);
+  const profit = Number(s.totalProfit || 0);
+  const lowStock = Number(s.lowStockProducts || 0);
 
   const insights = [];
 
   // Insight 1: Category Dominance
-  if (categories && categories.length > 0 && revenue > 0) {
-    const topCat = categories[0];
+  if (safeCategories.length > 0 && revenue > 0) {
+    const topCat = safeCategories[0];
     const topCatRev = Number(topCat.revenue || 0);
     const catPercent = ((topCatRev / revenue) * 100).toFixed(0);
     insights.push({
@@ -73,7 +76,7 @@ function BusinessInsightsCard({
 
   // Insight 4: Order Pipeline Status
   const pendingCount =
-    Number(orderStatuses.find((s) => s.status === "PENDING")?.count || 0);
+    Number(safeStatuses.find((s) => s.status === "PENDING")?.count || 0);
   if (pendingCount > 0) {
     insights.push({
       icon: "⏳",
@@ -84,8 +87,8 @@ function BusinessInsightsCard({
   }
 
   // Insight 5: Customer Concentration
-  if (topCustomers.length > 0 && revenue > 0) {
-    const topCust = topCustomers[0];
+  if (safeCustomers.length > 0 && revenue > 0) {
+    const topCust = safeCustomers[0];
     const custSpend = Number(topCust.totalSpent || 0);
     const concentration = (custSpend / revenue) * 100;
     if (concentration >= 40) {

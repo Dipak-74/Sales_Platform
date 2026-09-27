@@ -15,16 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Sales_Platform.DTO.DepartmentRequestDTO;
 import com.example.Sales_Platform.DTO.DepartmentResponseDTO;
-import com.example.Sales_Platform.DTO.EmployeeInvitationRequestDTO;
-import com.example.Sales_Platform.DTO.EmployeeInvitationResponseDTO;
 import com.example.Sales_Platform.DTO.UserRequestDTO;
 import com.example.Sales_Platform.DTO.UserResponseDTO;
 import com.example.Sales_Platform.Intities.DepartmentStatus;
-import com.example.Sales_Platform.Intities.InvitationStatus;
 import com.example.Sales_Platform.Intities.Role;
 import com.example.Sales_Platform.Intities.UserStatus;
 import com.example.Sales_Platform.Services.DepartmentServices;
-import com.example.Sales_Platform.Services.EmployeeInvitationServices;
 import com.example.Sales_Platform.Services.UserServices;
 
 @RestController
@@ -34,15 +30,12 @@ public class AdminController {
 
     private final UserServices userServices;
     private final DepartmentServices departmentServices;
-    private final EmployeeInvitationServices employeeInvitationServices;
 
     public AdminController(
             UserServices userServices,
-            DepartmentServices departmentServices,
-            EmployeeInvitationServices employeeInvitationServices) {
+            DepartmentServices departmentServices) {
         this.userServices = userServices;
         this.departmentServices = departmentServices;
-        this.employeeInvitationServices = employeeInvitationServices;
     }
 
     @PostMapping("/users")
@@ -123,31 +116,6 @@ public class AdminController {
             @PathVariable Long id,
             @RequestParam DepartmentStatus status) {
         return departmentServices.updateDepartmentStatus(id, status);
-    }
-
-    @PostMapping("/invitations")
-    public EmployeeInvitationResponseDTO createInvitation(
-            @RequestBody EmployeeInvitationRequestDTO request) {
-        return employeeInvitationServices.createInvitation(request);
-    }
-
-    @GetMapping("/invitations/{id}")
-    public EmployeeInvitationResponseDTO getInvitationById(
-            @PathVariable Long id) {
-        return employeeInvitationServices.getInvitationById(id);
-    }
-
-    @GetMapping("/invitations/manager/{managerId}")
-    public List<EmployeeInvitationResponseDTO> getInvitationsByManager(
-            @PathVariable Long managerId) {
-        return employeeInvitationServices.getInvitationsByManager(managerId);
-    }
-
-    @PutMapping("/invitations/{id}/status")
-    public EmployeeInvitationResponseDTO updateInvitationStatus(
-            @PathVariable Long id,
-            @RequestParam InvitationStatus status) {
-        return employeeInvitationServices.updateInvitationStatus(id, status);
     }
 }
 

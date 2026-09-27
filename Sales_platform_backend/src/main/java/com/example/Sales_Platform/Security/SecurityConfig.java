@@ -35,6 +35,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers("/error").permitAll()
                 .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
                 .requestMatchers("/api/manager/**").hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers("/api/employee/**").hasAnyRole("EMPLOYEE", "MANAGER", "ADMIN")
@@ -50,5 +51,10 @@ public class SecurityConfig {
             );
 
         return http.build();
+    }
+
+    @Bean
+    public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
+        return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
     }
 }

@@ -42,8 +42,18 @@ public class CashfreePaymentGatewayService implements PaymentGatewayService {
     }
 
     @Override
+    public boolean isConfigured() {
+        return clientId != null && !clientId.isBlank() &&
+               clientSecret != null && !clientSecret.isBlank() &&
+               !"demo".equalsIgnoreCase(clientId);
+    }
+
+    @Override
     public GatewayOrder createOrder(String orderId, BigDecimal amount, String customerId,
             String customerName, String customerEmail, String customerPhone) {
+        if (!isConfigured()) {
+            return new GatewayOrder(orderId, "demo_session_" + System.currentTimeMillis(), "ACTIVE");
+        }
         requireCredentials();
         Map<String, Object> customer = new HashMap<>();
         customer.put("customer_id", customerId);
@@ -83,6 +93,14 @@ public class CashfreePaymentGatewayService implements PaymentGatewayService {
 
     @Override
     public GatewayPayment getPayment(String gatewayOrderId) {
+        if (!isConfigured()) {
+            return new GatewayPayment("DEMO_PAY_" + System.currentTimeMillis(),
+                    "DEMO_TXN_" + System.currentTimeMillis(),
+                    null,
+                    "SUCCESS",
+                    "DEMO_SIG",
+                    gatewayOrderId);
+        }
         requireCredentials();
         List<?> payments = restClient.get()
                 .uri("/orders/{orderId}/payments", gatewayOrderId)

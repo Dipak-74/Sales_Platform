@@ -1,5 +1,4 @@
-import { formatCurrency } from "../../utils/formatCurrency";
-import { formatDate } from "../../utils/formatDate";
+import { formatCurrency, formatDate } from "../../utils/formatters";
 
 function OrderDetails({ order, onClose, onUpdateStatus, canUpdateStatus = false }) {
   if (!order) return null;
@@ -74,16 +73,17 @@ function OrderDetails({ order, onClose, onUpdateStatus, canUpdateStatus = false 
             <tbody>
               {items.length > 0 ? (
                 items.map((item, idx) => {
-                  const unitPrice = item.price ?? item.sellingPrice ?? 0;
+                  const unitPrice = item.unitPrice ?? item.price ?? item.sellingPrice ?? 0;
                   const qty = item.quantity ?? 1;
+                  const itemTotal = item.totalPrice ?? (unitPrice * qty);
                   return (
-                    <tr key={item.id ?? idx}>
+                    <tr key={item.orderItemId ?? item.id ?? idx}>
                       <td>
                         <strong>{item.productName || item.product?.name || item.name || `Item #${item.productId || idx + 1}`}</strong>
                       </td>
                       <td>{formatCurrency(unitPrice)}</td>
                       <td>x {qty}</td>
-                      <td style={{ textAlign: "right" }}>{formatCurrency(unitPrice * qty)}</td>
+                      <td style={{ textAlign: "right" }}>{formatCurrency(itemTotal)}</td>
                     </tr>
                   );
                 })

@@ -8,7 +8,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function CustomComparisonTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {

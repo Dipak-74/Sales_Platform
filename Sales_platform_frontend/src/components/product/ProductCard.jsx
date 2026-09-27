@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function ProductCard({ product, onAddToCart }) {
   const id = product.id ?? product.productId;

@@ -21,6 +21,7 @@ import com.example.Sales_Platform.Intities.OrderStatus;
 import com.example.Sales_Platform.Intities.Product;
 import com.example.Sales_Platform.Repo.CustomerRepo;
 import com.example.Sales_Platform.Repo.EmployeeRepo;
+import com.example.Sales_Platform.Repo.OrderItemRepo;
 import com.example.Sales_Platform.Repo.OrderRepo;
 import com.example.Sales_Platform.Repo.ProductRepo;
 
@@ -30,6 +31,9 @@ public class OrderServicesImpl
 
     @Autowired
     OrderRepo orderRepo;
+
+    @Autowired
+    OrderItemRepo orderItemRepo;
 
     @Autowired
     CustomerRepo customerRepo;
@@ -345,40 +349,39 @@ public class OrderServicesImpl
         List<OrderItemResponseDTO> itemDTOs =
                 order.getOrderItems()
                 .stream()
-                .map(item -> {
-
-                    OrderItemResponseDTO itemDTO =
-                            new OrderItemResponseDTO();
-
-                    itemDTO.setOrderItemId(
-                            item.getId());
-
-                    itemDTO.setProductId(
-                            item.getProduct().getId());
-
-                    itemDTO.setProductName(
-                            item.getProduct().getName());
-
-                    itemDTO.setQuantity(
-                            item.getQuantity());
-
-                    itemDTO.setUnitPrice(
-                            item.getUnitPrice());
-
-                    itemDTO.setDiscount(
-                            item.getDiscount());
-
-                    itemDTO.setTotalPrice(
-                            item.getTotalPrice());
-
-                    return itemDTO;
-
-                })
+                .map(this::mapItemToDTO)
                 .toList();
-
 
         dto.setItems(itemDTOs);
 
+        return dto;
+    }
+
+    @Override
+    public List<OrderItemResponseDTO> getItemsByOrder(Long orderId) {
+        return orderItemRepo.findByOrderId(orderId)
+                .stream()
+                .map(this::mapItemToDTO)
+                .toList();
+    }
+
+    @Override
+    public List<OrderItemResponseDTO> getItemsByProduct(Long productId) {
+        return orderItemRepo.findByProductId(productId)
+                .stream()
+                .map(this::mapItemToDTO)
+                .toList();
+    }
+
+    private OrderItemResponseDTO mapItemToDTO(OrderItem item) {
+        OrderItemResponseDTO dto = new OrderItemResponseDTO();
+        dto.setOrderItemId(item.getId());
+        dto.setProductId(item.getProduct().getId());
+        dto.setProductName(item.getProduct().getName());
+        dto.setQuantity(item.getQuantity());
+        dto.setUnitPrice(item.getUnitPrice());
+        dto.setDiscount(item.getDiscount());
+        dto.setTotalPrice(item.getTotalPrice());
         return dto;
     }
 }

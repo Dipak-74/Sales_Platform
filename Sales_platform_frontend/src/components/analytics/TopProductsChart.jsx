@@ -1,4 +1,4 @@
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function TopProductsChart({ products = [] }) {
   const list = products || [];

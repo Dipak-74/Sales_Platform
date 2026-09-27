@@ -71,6 +71,13 @@ function CustomerPayment() {
         throw new Error("Payment gateway session was not returned.");
       }
 
+      // DEMO PAYMENT MODE: When Cashfree keys are not set, backend issues demo_session_
+      if (String(data.paymentSessionId).startsWith("demo_session_")) {
+        const verifyRes = await verifyPayment(data.paymentId);
+        setPaymentResult(verifyRes?.data || data);
+        return;
+      }
+
       const cashfree = await load({
         mode: import.meta.env.VITE_CASHFREE_MODE || "sandbox",
       });

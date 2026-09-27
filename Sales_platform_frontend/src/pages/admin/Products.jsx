@@ -9,7 +9,7 @@ import Modal from "../../components/common/Modal";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 
-import {
+import { 
   getProducts,
   searchProducts,
   getProductsByCategory,
@@ -330,6 +330,7 @@ function AdminProducts() {
             "Product Image URL:",
             imageUrl
           );
+          imageUrl = await uploadProductImage(imageFile);
         }
 
         // Product data + image URL

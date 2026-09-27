@@ -35,4 +35,18 @@ public class AuthController {
 
         return authServices.googleRegister(request);
     }
+
+    // Normal Email/Password Login
+    @PostMapping("/login")
+    public LoginResponseDTO login(
+            @RequestBody com.example.Sales_Platform.DTO.LoginRequestDTO request) {
+        return authServices.login(request);
+    }
+
+    // Normal Registration
+    @PostMapping("/register")
+    public LoginResponseDTO register(
+            @RequestBody com.example.Sales_Platform.DTO.RegisterRequestDTO request) {
+        return authServices.register(request);
+    }
 }

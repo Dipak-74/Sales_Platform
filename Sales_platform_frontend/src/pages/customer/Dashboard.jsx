@@ -7,7 +7,7 @@ import StatCard from "../../components/dashboard/StatCard";
 import OrderTable from "../../components/order/OrderTable";
 import Loader from "../../components/common/Loader";
 import { getCustomerOrders } from "../../services/orderService";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function CustomerDashboard() {
   const { userName, userId } = useAuth();

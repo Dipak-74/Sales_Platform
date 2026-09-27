@@ -39,6 +39,9 @@ public class AuthServicesImpl implements AuthServices {
     @Autowired
     private GoogleIdEncryptor googleIdEncryptor;
 
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
     @Value("${google.client-id}")
     private String googleClientId;
 
@@ -353,6 +356,73 @@ private void ensureCustomerProfile(User user) {
         }
 }
 
+@Override
+public LoginResponseDTO login(com.example.Sales_Platform.DTO.LoginRequestDTO request) {
+    if (request == null || request.getEmail() == null || request.getPassword() == null) {
+        throw new RuntimeException("Email and password are required");
+    }
+
+    User user = userRepo.findByEmail(request.getEmail().trim().toLowerCase())
+            .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+
+    if (user.getStatus() != UserStatus.ACTIVE) {
+        throw new RuntimeException("Account is not active");
+    }
+
+    if (user.getPassword() == null || user.getPassword().isBlank()) {
+        throw new RuntimeException("This account is registered with Google. Please use Google Login.");
+    }
+
+    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        throw new RuntimeException("Invalid email or password");
+    }
+
+    ensureCustomerProfile(user);
+
+    String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
+
+    LoginResponseDTO response = new LoginResponseDTO();
+    response.setToken(token);
+    response.setUserId(user.getId());
+    response.setName(user.getName());
+    response.setEmail(user.getEmail());
+    response.setRole(user.getRole().name());
+
+    return response;
+}
+
+@Override
+public LoginResponseDTO register(com.example.Sales_Platform.DTO.RegisterRequestDTO request) {
+    if (request == null || request.getName() == null || request.getEmail() == null || request.getPassword() == null) {
+        throw new RuntimeException("Name, email and password are required");
+    }
+
+    String email = request.getEmail().trim().toLowerCase();
+    if (userRepo.findByEmail(email).isPresent()) {
+        throw new RuntimeException("User already registered with this email");
+    }
+
+    User newUser = new User();
+    newUser.setName(request.getName().trim());
+    newUser.setEmail(email);
+    newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+    newUser.setRole(Role.CUSTOMER);
+    newUser.setStatus(UserStatus.ACTIVE);
+
+    User savedUser = userRepo.save(newUser);
+    ensureCustomerProfile(savedUser);
+
+    String token = jwtService.generateToken(savedUser.getEmail(), savedUser.getRole().name());
+
+    LoginResponseDTO response = new LoginResponseDTO();
+    response.setToken(token);
+    response.setUserId(savedUser.getId());
+    response.setName(savedUser.getName());
+    response.setEmail(savedUser.getEmail());
+    response.setRole(savedUser.getRole().name());
+
+    return response;
+}
 
 }
 

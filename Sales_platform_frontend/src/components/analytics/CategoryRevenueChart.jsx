@@ -6,7 +6,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 const COLORS = ["#2563eb", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899", "#06b6d4", "#f97316"];
 
@@ -92,7 +92,7 @@ function CategoryRevenueChart({ categories = [] }) {
               <Tooltip content={<CategoryCustomTooltip totalRevenue={totalRevenue} />} />
               <Legend
                 wrapperStyle={{ fontSize: "0.78rem" }}
-                formatter={(value, entry) => {
+                formatter={(value) => {
                   const item = chartData.find((d) => d.name === value);
                   const percent = totalRevenue > 0 ? ((item?.value || 0) / totalRevenue * 100).toFixed(0) : 0;
                   return `${value} (${percent}%)`;

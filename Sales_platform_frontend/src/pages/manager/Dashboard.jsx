@@ -11,7 +11,7 @@ import { getCustomers } from "../../services/customerService";
 import { getOrders } from "../../services/orderService";
 import { getInventory } from "../../services/inventoryService";
 import { getSalesAnalytics } from "../../services/analyticsService";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function ManagerDashboard() {
   const { userName, userId } = useAuth();
@@ -80,7 +80,7 @@ function ManagerDashboard() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [userId]);
 
   return (
     <MainLayout title="Manager Dashboard" breadcrumb={["Dashboard"]} userName={userName || "Manager"}>

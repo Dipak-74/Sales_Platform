@@ -4,7 +4,7 @@ import MainLayout from "../../components/layout/MainLayout";
 import Loader from "../../components/common/Loader";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import { getPaymentsByStatus } from "../../services/paymentService";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 const statuses = ["PENDING", "SUCCESS", "FAILED"];
 

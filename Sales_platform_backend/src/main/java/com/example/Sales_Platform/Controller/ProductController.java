@@ -129,6 +129,17 @@ public class ProductController {
         return productServices.createProduct(request);
     }
 
+    // CREATE PRODUCT (JSON)
+    @PostMapping(
+            value = "/products",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
+    public ProductResponseDTO createProductJson(
+            @RequestBody ProductRequestDTO request) {
+        return productServices.createProduct(request);
+    }
+
     @PutMapping("/products/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
     public ProductResponseDTO updateProduct(

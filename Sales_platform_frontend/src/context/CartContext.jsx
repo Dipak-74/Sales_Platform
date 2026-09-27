@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 const STORAGE_KEY = "smart-sales-cart";
 const CartContext = createContext(null);
@@ -15,11 +15,11 @@ const readStoredCart = () => {
 export function CartProvider({ children }) {
   const [items, setItems] = useState(readStoredCart);
 
-  const persist = (nextItems) => {
+  const persist = useCallback((nextItems) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(nextItems));
-  };
+  }, []);
 
-  const addItem = (product) => {
+  const addItem = useCallback((product) => {
     setItems((current) => {
       const next = [...current];
       const productId = product.productId ?? product.id;
@@ -34,17 +34,17 @@ export function CartProvider({ children }) {
       persist(next);
       return next;
     });
-  };
+  }, [persist]);
 
-  const removeItem = (productId) => {
+  const removeItem = useCallback((productId) => {
     setItems((current) => {
       const next = current.filter((item) => (item.productId ?? item.id) !== productId);
       persist(next);
       return next;
     });
-  };
+  }, [persist]);
 
-  const updateQuantity = (productId, delta) => {
+  const updateQuantity = useCallback((productId, delta) => {
     setItems((current) => {
       const next = current
         .map((item) => {
@@ -60,12 +60,12 @@ export function CartProvider({ children }) {
       persist(next);
       return next;
     });
-  };
+  }, [persist]);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setItems([]);
     localStorage.removeItem(STORAGE_KEY);
-  };
+  }, []);
 
   const subtotal = useMemo(
     () => items.reduce((sum, item) => sum + Number(item.sellingPrice ?? item.price ?? 0) * Number(item.quantity || 1), 0),
@@ -82,7 +82,7 @@ export function CartProvider({ children }) {
       updateQuantity,
       clearCart,
     }),
-    [items, subtotal]
+    [items, subtotal, addItem, removeItem, updateQuantity, clearCart]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

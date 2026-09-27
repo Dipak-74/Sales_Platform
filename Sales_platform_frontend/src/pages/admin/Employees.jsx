@@ -11,7 +11,7 @@ import { getDepartments } from "../../services/departmentService";
 function AdminEmployees() {
   const { userName } = useAuth();
   const [employees, setEmployees] = useState([]);
-  const [managers, setManagers] = useState([]);
+  const [_managers, setManagers] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -69,6 +69,25 @@ function AdminEmployees() {
 
   return (
     <MainLayout title="Employees" breadcrumb={["Dashboard", "Employees"]} userName={userName || "Admin"}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 20 }}>
+        <div className="panel-card" style={{ padding: "16px 20px" }}>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>TOTAL EMPLOYEES</div>
+          <div style={{ fontSize: "1.7rem", fontWeight: 700, color: "var(--text-main)", marginTop: 4 }}>{employees.length}</div>
+        </div>
+        <div className="panel-card" style={{ padding: "16px 20px" }}>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>ACTIVE STAFF</div>
+          <div style={{ fontSize: "1.7rem", fontWeight: 700, color: "#10b981", marginTop: 4 }}>
+            {employees.filter(e => e.status !== "INACTIVE").length}
+          </div>
+        </div>
+        <div className="panel-card" style={{ padding: "16px 20px" }}>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>DEPARTMENTS</div>
+          <div style={{ fontSize: "1.7rem", fontWeight: 700, color: "var(--primary-color)", marginTop: 4 }}>
+            {departments.length}
+          </div>
+        </div>
+      </div>
+
       <div className="panel-card" style={{ display: "grid", gap: 18 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
           <div>
@@ -108,6 +127,7 @@ function AdminEmployees() {
                 <tr>
                   <th>ID</th>
                   <th>Name</th>
+                  <th>Employee</th>
                   <th>Email</th>
                   <th>Department</th>
                   <th>Manager</th>
@@ -119,6 +139,7 @@ function AdminEmployees() {
                 {displayedEmployees.map((emp) => {
                   const id = emp.userId ?? emp.id ?? emp.employeeId ?? emp.email;
                   const isInactive = emp.status === "INACTIVE";
+                  const nameStr = emp.name || emp.userName || "Employee";
                   return (
                     <tr key={id}>
                       <td>#{id}</td>
@@ -126,6 +147,42 @@ function AdminEmployees() {
                       <td>{emp.email || "-"}</td>
                       <td>{emp.department?.name || emp.departmentName || "General"}</td>
                       <td>{emp.manager?.name || emp.managerName || "-"}</td>
+                      <td>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                          <div style={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: "50%",
+                            background: "rgba(16, 185, 129, 0.12)",
+                            color: "#10b981",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontWeight: 700,
+                            fontSize: "0.88rem",
+                            flexShrink: 0
+                          }}>
+                            {nameStr.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 600, color: "var(--text-main)" }}>{nameStr}</div>
+                            <div style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>ID #{id}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span style={{ fontSize: "0.88rem" }}>{emp.email || "-"}</span>
+                      </td>
+                      <td>
+                        <span className="badge" style={{ background: "rgba(100, 116, 139, 0.1)", color: "var(--text-main)" }}>
+                          {emp.department?.name || emp.departmentName || "General"}
+                        </span>
+                      </td>
+                      <td>
+                        <span style={{ fontSize: "0.88rem", color: "var(--text-secondary)" }}>
+                          {emp.manager?.name || emp.managerName || "-"}
+                        </span>
+                      </td>
                       <td>
                         <span className={`badge ${isInactive ? "badge-danger" : "badge-success"}`}>
                           {emp.status || "ACTIVE"}

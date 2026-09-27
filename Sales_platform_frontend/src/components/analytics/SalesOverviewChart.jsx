@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {

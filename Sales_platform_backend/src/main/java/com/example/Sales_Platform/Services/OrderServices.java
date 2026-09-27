@@ -3,6 +3,7 @@ package com.example.Sales_Platform.Services;
 import java.util.List;
 
 import com.example.Sales_Platform.DTO.OrderCreateRequestDTO;
+import com.example.Sales_Platform.DTO.OrderItemResponseDTO;
 import com.example.Sales_Platform.DTO.OrderResponseDTO;
 import com.example.Sales_Platform.Intities.OrderStatus;
 
@@ -41,4 +42,10 @@ public interface OrderServices {
 
     // Cancel order
     OrderResponseDTO cancelOrder(Long id);
+
+    // Get items by order
+    List<OrderItemResponseDTO> getItemsByOrder(Long orderId);
+
+    // Get items by product
+    List<OrderItemResponseDTO> getItemsByProduct(Long productId);
 }

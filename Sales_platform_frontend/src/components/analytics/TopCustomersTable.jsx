@@ -1,4 +1,4 @@
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function TopCustomersTable({ customers = [] }) {
   const list = customers || [];

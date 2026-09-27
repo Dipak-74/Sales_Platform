@@ -11,7 +11,7 @@ import { getUsersByRole } from "../../services/userService";
 import { getCustomers } from "../../services/customerService";
 import { getProducts } from "../../services/productService";
 import { getOrders } from "../../services/orderService";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function AdminDashboard() {
   const { userName } = useAuth();

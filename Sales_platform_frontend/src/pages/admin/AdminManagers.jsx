@@ -118,6 +118,25 @@ function AdminManagers() {
       breadcrumb={["Dashboard", "Managers"]}
       userName={userName || "Admin"}
     >
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginBottom: 20 }}>
+        <div className="panel-card" style={{ padding: "16px 20px" }}>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>TOTAL MANAGERS</div>
+          <div style={{ fontSize: "1.7rem", fontWeight: 700, color: "var(--text-main)", marginTop: 4 }}>{managers.length}</div>
+        </div>
+        <div className="panel-card" style={{ padding: "16px 20px" }}>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>ACTIVE ACCOUNTS</div>
+          <div style={{ fontSize: "1.7rem", fontWeight: 700, color: "#10b981", marginTop: 4 }}>
+            {managers.filter(m => m.status !== "INACTIVE").length}
+          </div>
+        </div>
+        <div className="panel-card" style={{ padding: "16px 20px" }}>
+          <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>INACTIVE</div>
+          <div style={{ fontSize: "1.7rem", fontWeight: 700, color: "#ef4444", marginTop: 4 }}>
+            {managers.filter(m => m.status === "INACTIVE").length}
+          </div>
+        </div>
+      </div>
+
       <div className="panel-card" style={{ display: "grid", gap: 18 }}>
         <div
           style={{
@@ -160,7 +179,7 @@ function AdminManagers() {
               <thead>
                 <tr>
                   <th>User ID</th>
-                  <th>Name</th>
+                  <th>Manager</th>
                   <th>Email</th>
                   <th>Role</th>
                   <th>Status</th>
@@ -171,16 +190,37 @@ function AdminManagers() {
                 {managers.map((manager) => {
                   const userId = manager.userId;
                   const isInactive = manager.status === "INACTIVE";
+                  const nameStr = manager.name || "Manager";
 
                   return (
                     <tr key={userId}>
                       <td>#{userId}</td>
                       <td>
-                        <strong>{manager.name || "-"}</strong>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                          <div style={{
+                            width: 36,
+                            height: 36,
+                            borderRadius: "50%",
+                            background: "rgba(37, 99, 235, 0.1)",
+                            color: "var(--primary-color)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontWeight: 700,
+                            fontSize: "0.88rem",
+                            flexShrink: 0
+                          }}>
+                            {nameStr.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div style={{ fontWeight: 600, color: "var(--text-main)" }}>{nameStr}</div>
+                            <div style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>ID #{userId}</div>
+                          </div>
+                        </div>
                       </td>
                       <td>{manager.email || "-"}</td>
                       <td>
-                        <span className="badge">
+                        <span className="badge" style={{ background: "rgba(37, 99, 235, 0.1)", color: "var(--primary-color)" }}>
                           {manager.role || "MANAGER"}
                         </span>
                       </td>

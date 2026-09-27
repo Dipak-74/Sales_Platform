@@ -6,7 +6,7 @@ import ErrorMessage from "../../components/common/ErrorMessage";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { getProductById } from "../../services/productService";
-import { formatCurrency } from "../../utils/formatCurrency";
+import { formatCurrency } from "../../utils/formatters";
 
 function CustomerProductDetails() {
   const { userName } = useAuth();

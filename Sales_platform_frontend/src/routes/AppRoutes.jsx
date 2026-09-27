@@ -18,13 +18,13 @@ import AdminDepartments from "../pages/admin/AdminDepartments";
 import AdminCategories from "../pages/admin/Categories";
 import AdminProducts from "../pages/admin/Products";
 import AdminUsers from "../pages/admin/AdminUsers";
-import AdminInvitations from "../pages/admin/AdminInvitations";
 import AdminEmployees from "../pages/admin/Employees";
 import AdminCustomers from "../pages/admin/Customers";
 import AdminOrders from "../pages/admin/Orders";
 import AdminInventory from "../pages/admin/Inventory";
 import AdminAnalytics from "../pages/admin/Analytics";
 import AdminPayments from "../pages/admin/Payments";
+import AdminReports from "../pages/admin/Reports";
 
 // Manager Pages
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
@@ -130,22 +130,13 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/admin/invitations"
-        element={
-          <ProtectedRoute>
-            <RoleRoute allowedRoles={["ADMIN"]}>
-              <AdminInvitations />
-            </RoleRoute>
-          </ProtectedRoute>
-        }
-      />
       <Route path="/admin/employees" element={<ProtectedRoute><RoleRoute allowedRoles={["ADMIN"]}><AdminEmployees /></RoleRoute></ProtectedRoute>} />
       <Route path="/admin/customers" element={<ProtectedRoute><RoleRoute allowedRoles={["ADMIN"]}><AdminCustomers /></RoleRoute></ProtectedRoute>} />
       <Route path="/admin/orders" element={<ProtectedRoute><RoleRoute allowedRoles={["ADMIN"]}><AdminOrders /></RoleRoute></ProtectedRoute>} />
       <Route path="/admin/inventory" element={<ProtectedRoute><RoleRoute allowedRoles={["ADMIN"]}><AdminInventory /></RoleRoute></ProtectedRoute>} />
       <Route path="/admin/analytics" element={<ProtectedRoute><RoleRoute allowedRoles={["ADMIN"]}><AdminAnalytics /></RoleRoute></ProtectedRoute>} />
       <Route path="/admin/payments" element={<ProtectedRoute><RoleRoute allowedRoles={["ADMIN"]}><AdminPayments /></RoleRoute></ProtectedRoute>} />
+      <Route path="/admin/reports" element={<ProtectedRoute><RoleRoute allowedRoles={["ADMIN"]}><AdminReports /></RoleRoute></ProtectedRoute>} />
       <Route
         path="/admin/profile"
         element={

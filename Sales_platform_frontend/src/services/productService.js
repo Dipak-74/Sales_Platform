@@ -29,8 +29,17 @@ export const filterProducts = (categoryId, status) =>
 // React → Supabase → imageUrl → Spring Boot
 // =====================================================
 
-export const createProduct = (product) =>
-  api.post("/api/products", product);
+export const createProduct = (product, imageFile = null) => {
+  const formData = new FormData();
+  formData.append(
+    "product",
+    new Blob([JSON.stringify(product)], { type: "application/json" })
+  );
+  if (imageFile) {
+    formData.append("image", imageFile);
+  }
+  return api.post("/api/products", formData);
+};
 
 
 // =====================================================

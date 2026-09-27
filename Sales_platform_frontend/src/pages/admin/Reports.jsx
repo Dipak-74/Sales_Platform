@@ -18,7 +18,7 @@ function Reports() {
       const res = await getAnalytics("ADMIN", range.startDate, range.endDate);
       exportAnalyticsCSV(res.data, range.label);
       setMessage(`Successfully downloaded ${range.label} report.`);
-    } catch (err) {
+    } catch {
       setMessage("Failed to generate report. Please try again.");
     } finally {
       setDownloading(false);

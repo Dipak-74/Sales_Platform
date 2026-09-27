@@ -124,11 +124,14 @@ function CustomerProducts() {
             onChange={handleSearchChange}
           />
 
-          <select className="select" value={selectedCategory} onChange={handleCategoryChange}>
+          <select className="select" value={selectedCategory} onChange={handleCategoryChange} aria-label="Filter by category">
             <option value="">All Categories</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
-            ))}
+            {categories.map((cat, idx) => {
+              const catId = cat.categoryId ?? cat.id ?? idx;
+              return (
+                <option key={catId} value={catId}>{cat.name}</option>
+              );
+            })}
           </select>
         </div>
 

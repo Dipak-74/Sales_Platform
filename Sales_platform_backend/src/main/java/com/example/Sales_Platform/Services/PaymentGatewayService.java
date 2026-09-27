@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public interface PaymentGatewayService {
+    boolean isConfigured();
+
     GatewayOrder createOrder(String orderId, BigDecimal amount, String customerId,
             String customerName, String customerEmail, String customerPhone);
 

@@ -11,9 +11,6 @@ import {
   updateManagerStatus,
 } from "../../services/managerService";
 
-console.log(localStorage.getItem("role"));
-console.log(localStorage.getItem("token"));
-
 function AdminManagers() {
   const { userName } = useAuth();
 

@@ -33,7 +33,7 @@ import com.example.Sales_Platform.Services.UserServices;
 
 @RestController
 @RequestMapping("/api/manager")
-@PreAuthorize("hasAnyAuthority('ROLE_MANAGER', 'ROLE_ADMIN', 'MANAGER', 'ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
 public class ManagerController {
 
     private final EmployeeServices employeeServices;

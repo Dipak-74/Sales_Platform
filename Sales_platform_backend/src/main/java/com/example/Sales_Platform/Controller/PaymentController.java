@@ -58,7 +58,7 @@ public class PaymentController {
     }
 
     @PutMapping("/payments/{id}/status")
-    @PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE')")
     public PaymentResponseDTO updatePaymentStatus(
             @PathVariable Long id,
             @RequestParam PaymentStatus status) {
@@ -66,7 +66,7 @@ public class PaymentController {
     }
 
     @PutMapping("/payments/{id}/verify")
-    @PreAuthorize("hasAnyRole('MANAGER', 'EMPLOYEE', 'CUSTOMER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'EMPLOYEE', 'CUSTOMER')")
     public PaymentResponseDTO verifyPayment(
             @PathVariable Long id) {
         return paymentServices.verifyPayment(id);

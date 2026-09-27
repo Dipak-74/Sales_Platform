@@ -15,4 +15,14 @@ public interface AuthServices {
     LoginResponseDTO googleRegister(
             GoogleLoginRequestDTO request
     );
+
+    // Normal Email/Password Login
+    LoginResponseDTO login(
+            com.example.Sales_Platform.DTO.LoginRequestDTO request
+    );
+
+    // Normal Registration
+    LoginResponseDTO register(
+            com.example.Sales_Platform.DTO.RegisterRequestDTO request
+    );
 }
